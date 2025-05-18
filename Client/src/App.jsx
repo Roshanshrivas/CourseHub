@@ -9,6 +9,9 @@ import Login from './Pages/auth/Login';
 import Signup from './Pages/auth/Signup';
 import Footer from './components/Footer';
 import Profile from './Pages/Profile';
+import Admin from './Pages/admin/Admin';
+import Dashboard from './Pages/admin/Dashboard';
+import Course from './Pages/admin/Course';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +33,20 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <><Navbar/><Profile/></>
+  },
+  {
+    path: "/admin",
+    element: <><Navbar/><Admin/></>,
+    children: [
+      {
+        path: "dashboard",
+        element: <Dashboard/>
+      },
+      {
+        path: "course",
+        element: <Course/>
+      }
+    ]
   }
 ])
 
