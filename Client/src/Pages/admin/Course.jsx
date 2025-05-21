@@ -1,14 +1,21 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setCourse } from "@/redux/courseSlice";
+import axios from "axios";
+import { Badge } from "@/components/ui/badge";
+import { Edit } from "lucide-react";
 
 const invoices = [
   {
@@ -56,37 +63,69 @@ const invoices = [
 ];
 
 const Course = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { course } = useSelector((store) => store.course);
+
+  useEffect(() => {
+    const getCreatedCourse = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/course/", {
+          withCredentials: true,
+        });
+        if (res.data.success) {
+          dispatch(setCourse(res.data.courses));
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    getCreatedCourse();
+  });
+
   return (
     <div className="md:p-10 p-4 w-full h-screen">
-      <Button>Create Course</Button>
+      <Button className="bg-blue-500" onClick={() => navigate("create")}>
+        Create Course
+      </Button>
       <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableCaption>A list of your recent Courses.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className="w-[100px]">Course</TableHead>
+            <TableHead className="text-right">Price</TableHead>
+            <TableHead className="text-center">Status</TableHead>
+            <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
+          {course?.map((course) => (
+            <TableRow key={course._id}>
+              <TableCell className="md:w-[300px] flex items-center gap-2">
+                <img src={course?.courseThumbnail} alt="thumbnail" />
+                {course.courseTitle}
+              </TableCell>
+              <TableCell className="font-medium text-right">
+                {course.coursePrice || "NA"}
+              </TableCell>
+              <TableCell className="text-center">
+                <Badge
+                  className={course.isPublished ? "bg-green-400" : "bg-red-400"}
+                >
+                  {course.isPublished ? "Published" : "Draft"}
+                </Badge>
+              </TableCell>
               <TableCell className="text-right">
-                {invoice.totalAmount}
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate(`/admin/course/${course._id}`)}
+                >
+                  <Edit />
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
-          </TableRow>
-        </TableFooter>
       </Table>
     </div>
   );
