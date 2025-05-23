@@ -7,7 +7,12 @@ import ListItem from '@tiptap/extension-list-item'
 import Heading from '@tiptap/extension-heading'
 import React from 'react'
 
-const RichTextEditor = () => {
+const RichTextEditor = ({input, setInput}) => {
+
+  const handleChange = (content) => {
+    setInput({...input, description:content})
+  }
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -17,7 +22,10 @@ const RichTextEditor = () => {
       ListItem,
       Heading.configure({ levels: [1, 2, 3] }),
     ],
-    content: '<p>Start writing...</p>',
+    content: input.description,
+    onUpdate: ({ editor }) => {
+    handleChange(editor.getHTML());
+  },
   })
 
   if (!editor) return null

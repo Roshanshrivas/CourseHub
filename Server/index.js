@@ -4,6 +4,7 @@ import connectDB from './utils/db.js';
 import userRoute from "./routes/user.route.js";
 import courseRoute from "./routes/course.route.js";
 import cookieParser from 'cookie-parser';
+import mediaRoute from "./routes/media.route.js";
 import cors from 'cors';
 
 dotenv.config();
@@ -19,12 +20,13 @@ app.use(express.urlencoded({ extended: true })); // to parse URL-encoded bodies
 app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    // methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 }))
 
 // apis 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
+app.use("/api/v1/media", mediaRoute);
 
 
 
