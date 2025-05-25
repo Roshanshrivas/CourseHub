@@ -53,7 +53,7 @@ const CourseTab = () => {
 
     useEffect(() => {
       getCourseById();
-    }, [])
+    }, [id])
 
     const [input, setInput] = useState({
       courseTitle:selectedCourse?.courseTitle,

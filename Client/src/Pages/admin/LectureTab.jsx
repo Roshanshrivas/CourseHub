@@ -50,7 +50,7 @@ const LectureTab = () => {
                 )
 
                 if(res.data.success) {
-                    setUploadProgress({
+                    setUploadVideoInfo({
                         videoUrl: res.data.url,
                         publicId: res.data.data.public_id,
                     })
@@ -69,20 +69,24 @@ const LectureTab = () => {
         e.preventDefault();
         const data = {
             lectureTitle,
-            videoInfo:uploadVideoInfo,
-            isPreviewFree:isFree,
+            videoInfo: uploadVideoInfo,
+            isPreviewFree: isFree,
         }
         try {
             setLoading(true);
-            const res = await axios.post(`http://localhost:8000/api/v1/course/${courseId}/lecture/${lectureId}`, data, {
+            const res = await axios.put(`http://localhost:8000/api/v1/course/${courseId}/lecture/${lectureId}`, data, {
                 headers: {
                     "Content-Type": "application/json"
                 },
                 withCredentials:true
             })
             if(res.data.success) {
-                dispatch([...lecture, setLecture(res.data.lecture)])
-                toast.success(res.data.message);
+                // Update the lecture in Redux state
+            const updatedLectures = lecture.map(l => 
+                l._id === lectureId ? res.data.lecture : l
+            );
+            dispatch(setLecture(updatedLectures));
+            toast.success(res.data.message);
             }
         } catch (error) {
             console.error(error, "something wrong")

@@ -17,7 +17,6 @@ const CreateLecture = () => {
     const [lectureTitle, setLectureTitle] = useState("");
     const [loading, setLoading] = useState(false);
     const {lecture} = useSelector(store=>store.lecture);
-    console.log(lecture, "lecture");
     
 
 
@@ -32,7 +31,7 @@ const CreateLecture = () => {
                     },
                     withCredentials:true,
                 })
-                if(res.data.success) {
+                if(res.data.success){
                     toast.success(res.data.message);
                     await getLectures();
 
